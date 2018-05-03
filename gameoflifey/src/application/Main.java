@@ -15,8 +15,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	Rectangle[][] matrix;
-	private static final int DIM = 700;
-	private int N = 50;
+	private static final int DIM = 250;
+	private int N = 20;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -33,7 +33,7 @@ public class Main extends Application {
 
 			// Spawning
 			grid.spawnExplorer(N / 2, N / 2);
-
+			grid.spawnExplorer(N / 4, N / 4);
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
 					int x = grid.grid[i][j].isPopulated() ? 1 : 0;
