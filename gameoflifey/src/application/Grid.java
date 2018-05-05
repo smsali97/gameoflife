@@ -37,29 +37,15 @@ public class Grid {
 	}
 
 	public int getCellCount(int r, int c) {
-		/*
-		 * int ctr = 0; for (int i = r -1; i <= r + 1; i++) { if (i == -1 || i ==
-		 * grid.length) continue;
-		 * 
-		 * for (int j = c -1; j <= c + 1; j++) { if ( j == grid.length || j == -1 ||
-		 * (i== r && j == c)) continue; if (grid[i][j].isPopulated()) ctr++; } } return
-		 * ctr;
-		 */
 
-		int l = r;
-		int m = c;
 		int aliveNeighbours = 0;
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
-				if (grid[r + i][m + j].isPopulated())
+				if (grid[r + i][c + j].isPopulated() || !(i == r && j == c))
 					aliveNeighbours++;
 			}
 		}
-		// The cell needs to be subtracted from
-		// its neighbours as it was counted before
-		if (aliveNeighbours != 0)
-			System.out.println(aliveNeighbours);
-		return aliveNeighbours;
+		return -aliveNeighbours;
 
 	}
 
@@ -100,6 +86,7 @@ public class Grid {
 
 				// For a space that is 'populated':
 				if (grid[r][c].isPopulated()) {
+					new_grid[r][c].active = false;
 
 					// Any live cell with fewer than two live neighbors dies, as if caused by under
 					// population.
@@ -122,6 +109,8 @@ public class Grid {
 					// reproduction.
 					if (neighbors == 3)
 						new_grid[r][c].populate();
+					
+					new_grid[r][c].active = true;
 				}
 			}
 		}
@@ -132,6 +121,7 @@ public class Grid {
 
 class Cell {
 	private boolean populated = false;
+	public boolean active = false;
 	
 	public Cell() {
 		populated = false;
