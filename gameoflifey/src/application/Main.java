@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,36 +16,39 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	Rectangle[][] matrix;
 	private static final int DIM = 600;
-	private int N = 60;
+	private static int N = 60;
+	private static Grid grid;
 
-	private Color active = Color.LIGHTSKYBLUE;
+	private Color active = Color.SKYBLUE;
 	private Color inactive = Color.gray(0.2);
-	private Color changed = Color.YELLOW; 
+	private Color changed = Color.YELLOW;
 
-	private final long time = 400_000_000;
+	private final long time = 300_000_000;
+
+	private static final String Beehive = "Beehive";
+	private static final String Blinker = "Blinker";
+	private static final String Glider = "Glider";
+	private static final String Pulsar = "Pulsar";
+	private static final String Pentadecathlon = "Pentadecathlon";
+	private static final String Exploder = "Exploder";
+	private static final String CLEAR = "CLEAR";
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			HBox root = new HBox();
 			root.setAlignment(Pos.CENTER);
-			Grid grid = new Grid(N);
+			root.setPadding(new Insets(5));
+			grid = new Grid(N);
 
 			Canvas canvas = new Canvas(DIM, DIM);
 			VBox panel = createPanel();
@@ -59,8 +63,6 @@ public class Main extends Application {
 			grid.spawnBeeHive(N / 8, N / 8);
 			grid.spawnBlinker(N / 2, N / 2);
 			// grid.spawnBlinker(N/4, N/4);
-
-			consolePrint(grid.grid);
 
 			int width = DIM / N;
 
@@ -107,7 +109,7 @@ public class Main extends Application {
 
 								} else {
 									gc.setFill(inactive);
-									// gc.fillRect(i * width, j * width, width, width);
+									// gc.fillRect(+* width, j * width, width, width);
 									gc.fillText("■", i * width, j * width, width);
 								}
 							}
@@ -136,10 +138,17 @@ public class Main extends Application {
 		}
 	}
 
+	public static void clear(Cell[][] grid) {
+		int N = grid.length;
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				grid[i][j].die();
+	}
+
 	public static VBox createPanel() {
 
 		ComboBox<String> box = new ComboBox<>();
-		box.getItems().addAll("Beehive", "Blinker", "Toad", "Glider", "Pentadecathlon", "Pulsar", "Exploder");
+		box.getItems().addAll(Beehive, Blinker, Glider, Pentadecathlon, Pulsar, Exploder, CLEAR);
 		box.setValue("Glider");
 
 		TextField rowText = new TextField();
@@ -174,7 +183,45 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				int r = -1;
+				int c = -1;
+				
+
+				try {
+					r = Integer.parseInt(rowText.getText());
+					c = Integer.parseInt(colText.getText());
+				} catch (NumberFormatException e) {
+					
+				}
+
+				r = r == -1 ? (int) (1 + Math.random() * N) : r;
+				c = c == -1 ? (int) (1 + Math.random() * N) : c;
+				switch (box.getValue()) {
+				case Beehive:
+					System.out.println("YAYY");
+					grid.spawnBeeHive(r, c);
+					break;
+				case Blinker:
+					grid.spawnBlinker(r, c);
+					break;
+				case Glider:
+					grid.spawnExplorer(r, c);
+					break;
+				case Pentadecathlon:
+
+					break;
+				case Pulsar:
+
+					break;
+				case Exploder:
+
+					break;
+				case CLEAR:
+					clear(grid.grid);
+					break;
+				default:
+					break;
+				}
 
 			}
 		});
@@ -186,15 +233,14 @@ public class Main extends Application {
 
 		return panel;
 	}
-	
+
 	public static Label getFancyLabel() {
-		Text text = new Text();
 		Label l = new Label();
 		l.setFont(new Font(30));
 		l.setText("The Game of Life");
-		
+
 		return l;
-		
+
 	}
 
 	public static void main(String[] args) {

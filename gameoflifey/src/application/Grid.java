@@ -22,7 +22,7 @@ public class Grid {
 	public void spawnBeeHive(int r, int c) {
 		if (r + 3 >= grid.length || c + 3 >= grid.length)
 			return;
-
+		
 		grid[r][c + 1].populate();
 		grid[r][c + 2].populate();
 		
@@ -107,10 +107,11 @@ public class Grid {
 				else {
 					// Any dead cell with exactly three live neighbors becomes a live cell, as if by
 					// reproduction.
-					if (neighbors == 3)
+					if (neighbors == 3) {
 						new_grid[r][c].populate();
 					
-					new_grid[r][c].active = true;
+						new_grid[r][c].active = true;
+					}
 				}
 			}
 		}
